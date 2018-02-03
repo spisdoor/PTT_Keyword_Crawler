@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        td {
+            white-space: pre;
+        }
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }} {{ form.name() }}<br>
+        {{ form.page_num.label }} {{ form.page_num() }}<br>
+        {{ form.keyword.label }} {{ form.keyword() }}<br>
+        {{ form.search_way.label }} {{ form.search_way() }}<br>
+        {{ form.submit() }}
+    </form>
+
+    {% if article_title %}
+    <table>
+        <tr>
+            <th>標題</th>
+        </tr>
+        {% for article_title_ in article_title %}
+        <tr>
+            <td class="result-title"><a href={{ article_title_[1] }}>{{ article_title_[0] }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if article_content %}
+    <table>
+        <tr>
+            <th>內文</th>
+            <th>文章來源</th>
+        </tr>
+        {% for article_content_ in article_content %}
+        <tr>
+            <td class="result-content-message">{{ article_content_[0] }}</td>
+            <td><a href={{ article_content_[2] }}>{{ article_content_[1] }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if article_message %}
+    <table>
+        <tr>
+            <th>標題</th>
+            <th>文章來源</th>
+        </tr>
+        {% for article_message_ in article_message %}
+        <tr>
+            <td class="result-content-message">{{ article_message_[0] }}</td>
+            <td><a href={{ article_message_[2] }}>{{ article_message_[1] }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <script type="text/javascript">
+        (function(){
+            var keyword = '{{ keyword }}';
+            var elements = document.getElementsByClassName('result-title');
+            for (i = 0; i < elements.length; i++) {
+                var element = elements[i].getElementsByTagName('A')[0];
+                if (element.innerText.indexOf(keyword) > -1){
+                    var start = element.innerText.indexOf(keyword);
+                    var end = start + keyword.length;
+                    element.innerHTML = element.innerText.substring(0, start) + "<span class='highlight'>" + element.innerText.substring(start, end) + '</span>' + element.innerText.substring(end, element.innerText.length);
+                }
+            }
+        }());
+        (function(){
+            var keyword = '{{ keyword }}';
+            var elements = document.getElementsByClassName('result-content-message');
+            for (i = 0; i < elements.length; i++) {
+                if (elements[i].innerText.indexOf(keyword) > -1) {
+                    var start = elements[i].innerText.indexOf(keyword);
+                    var end = start + keyword.length;
+                    elements[i].innerHTML = elements[i].innerText.substring(0, start) + "<span class='highlight'>" + elements[i].innerText.substring(start, end) + '</span>' + elements[i].innerText.substring(end, elements[i].innerText.length);
+                }
+            }
+        }());
+    </script>
+</body>
+</html>
